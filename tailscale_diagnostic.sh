@@ -67,11 +67,11 @@ echo "1. ОБЯЗАТЕЛЬНЫЕ ПАРАМЕТРЫ:"
 # 1.1) enabled
 ENABLED=$(uci -q get tailscale.settings.enabled)
 if [ "$ENABLED" = "1" ]; then
-    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}%s${CLR_OFF}\n" "enabled" "1"
+    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}%s${CLR_OFF} [%s]\n" "enabled" "1" "галочка \"Включить\""
 elif [ -z "$ENABLED" ]; then
-    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}НЕ НАЙДЕН${CLR_OFF}\n" "enabled"
+    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}НЕ НАЙДЕН${CLR_OFF} [%s]\n" "enabled" "галочка \"Включить\""
 else
-    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} (должно быть 1)\n" "enabled" "$ENABLED"
+    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} (должно быть 1) [%s]\n" "enabled" "$ENABLED" "галочка \"Включить\""
 fi
 
 # 1.2) accept_dns (зависит от версии)
@@ -89,30 +89,30 @@ if [ -n "$TS_VERSION" ]; then
 fi
 
 if [ "$ACCEPT_DNS" = "$EXPECTED_DNS" ]; then
-    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}%s${CLR_OFF}\n" "accept_dns" "$ACCEPT_DNS"
+    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}%s${CLR_OFF} [%s]\n" "accept_dns" "$ACCEPT_DNS" "галочка \"Принимать DNS\""
 elif [ -z "$ACCEPT_DNS" ]; then
-    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}НЕ НАЙДЕН${CLR_OFF} (должно быть %s)\n" "accept_dns" "$EXPECTED_DNS"
+    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}НЕ НАЙДЕН${CLR_OFF} (должно быть %s) [%s]\n" "accept_dns" "$EXPECTED_DNS" "галочка \"Принимать DNS\""
 else
-    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} (должно быть %s)\n" "accept_dns" "$ACCEPT_DNS" "$EXPECTED_DNS"
+    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} (должно быть %s) [%s]\n" "accept_dns" "$ACCEPT_DNS" "$EXPECTED_DNS" "галочка \"Принимать DNS\""
 fi
 
 # 1.3) accept_routes
 ACCEPT_ROUTES=$(uci -q get tailscale.settings.accept_routes)
 if [ "$ACCEPT_ROUTES" = "1" ]; then
-    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}%s${CLR_OFF}\n" "accept_routes" "1"
+    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}%s${CLR_OFF} [%s]\n" "accept_routes" "1" "галочка \"Принимать маршруты\""
 elif [ -z "$ACCEPT_ROUTES" ]; then
-    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}НЕ НАЙДЕН${CLR_OFF}\n" "accept_routes"
+    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}НЕ НАЙДЕН${CLR_OFF} [%s]\n" "accept_routes" "галочка \"Принимать маршруты\""
 else
-    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} (должно быть 1)\n" "accept_routes" "$ACCEPT_ROUTES"
+    printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} (должно быть 1) [%s]\n" "accept_routes" "$ACCEPT_ROUTES" "галочка \"Принимать маршруты\""
 fi
 
 # 1.4) hostname (если указан - проверяем формат)
 HOSTNAME=$(uci -q get tailscale.settings.hostname)
 if [ -n "$HOSTNAME" ]; then
     if echo "$HOSTNAME" | grep -qE '^[a-zA-Z0-9.-]+$'; then
-        printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${CYAN}%s${CLR_OFF}\n" "hostname" "$HOSTNAME"
+        printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${CYAN}%s${CLR_OFF} [%s]\n" "hostname" "$HOSTNAME" "поле \"Имя устройства\""
     else
-        printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF}\n" "hostname" "$HOSTNAME"
+        printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}%s${CLR_OFF} [%s]\n" "hostname" "$HOSTNAME" "поле \"Имя устройства\""
         printf "         ${YELLOW}Недопустимые символы! Разрешены: a-z, A-Z, 0-9, '-', '.'${CLR_OFF}\n"
     fi
 fi
@@ -123,54 +123,54 @@ echo "2. ОПЦИОНАЛЬНЫЕ ПАРАМЕТРЫ:"
 # 2.1) fw_mode
 FW_MODE=$(uci -q get tailscale.settings.fw_mode)
 if [ "$FW_MODE" = "nftables" ]; then
-    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${CYAN}nftables${CLR_OFF}\n" "fw_mode"
+    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${CYAN}nftables${CLR_OFF} [%s]\n" "fw_mode" "настройка \"Режим межсетевого экрана\""
 elif [ "$FW_MODE" = "iptables" ]; then
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${CYAN}iptables${CLR_OFF}\n" "fw_mode"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${CYAN}iptables${CLR_OFF} [%s]\n" "fw_mode" "настройка \"Режим межсетевого экрана\""
 elif [ -z "$FW_MODE" ]; then
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}не установлен${CLR_OFF} (по умолчанию nftables)\n" "fw_mode"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}не установлен${CLR_OFF} (по умолчанию nftables) [%s]\n" "fw_mode" "настройка \"Режим межсетевого экрана\""
 else
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${CYAN}%s${CLR_OFF}\n" "fw_mode" "$FW_MODE"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${CYAN}%s${CLR_OFF} [%s]\n" "fw_mode" "$FW_MODE" "настройка \"Режим межсетевого экрана\""
 fi
 
 # 2.2) log_stdout
 LOG_STDOUT=$(uci -q get tailscale.settings.log_stdout)
 if [ "$LOG_STDOUT" = "1" ]; then
-    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${GREEN}включен${CLR_OFF}\n" "log_stdout"
+    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${GREEN}включен${CLR_OFF} [%s]\n" "log_stdout" "галочка \"Журнал вывода\""
 else
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF}\n" "log_stdout"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF} [%s]\n" "log_stdout" "галочка \"Журнал вывода\""
 fi
 
 # 2.3) log_stderr
 LOG_STDERR=$(uci -q get tailscale.settings.log_stderr)
 if [ "$LOG_STDERR" = "1" ]; then
-    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${GREEN}включен${CLR_OFF}\n" "log_stderr"
+    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${GREEN}включен${CLR_OFF} [%s]\n" "log_stderr" "галочка \"Журнал ошибок\""
 else
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF}\n" "log_stderr"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF} [%s]\n" "log_stderr" "галочка \"Журнал ошибок\""
 fi
 
 # 2.4) disable_snat_subnet_routes
 SNAT=$(uci -q get tailscale.settings.disable_snat_subnet_routes)
 if [ "$SNAT" = "0" ]; then
-    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${GREEN}SNAT включен${CLR_OFF}\n" "disable_snat_subnet_routes"
+    printf "  ${GREEN}[ИНФО]${CLR_OFF} %-30s | ${GREEN}SNAT включен${CLR_OFF} [%s]\n" "disable_snat_subnet_routes" "CLI флаг"
 elif [ "$SNAT" = "1" ]; then
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}SNAT выключен${CLR_OFF}\n" "disable_snat_subnet_routes"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}SNAT выключен${CLR_OFF} [%s]\n" "disable_snat_subnet_routes" "CLI флаг"
 else
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}не установлен${CLR_OFF}\n" "disable_snat_subnet_routes"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}не установлен${CLR_OFF} [%s]\n" "disable_snat_subnet_routes" "CLI флаг"
 fi
 
 echo ""
-echo "3. ПРОВЕРКА ВЫХОДНОГО УЗЛА (EXIT NODE):"
+echo "3. ПРОВЕРКА EXIT NODE:"
 
 # 3.1) advertise_exit_node
 EXIT_NODE=$(uci -q get tailscale.settings.advertise_exit_node)
 if [ "$EXIT_NODE" = "1" ]; then
-    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}включен${CLR_OFF}\n" "advertise_exit_node"
+    printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${GREEN}включен${CLR_OFF} [%s]\n" "advertise_exit_node" "галочка \"Узел выхода\""
     
     # 3.2) advertise_routes с проверкой подсети
     ADVERTISED_ROUTES=$(uci -q get tailscale.settings.advertise_routes)
     
     if [ -z "$ADVERTISED_ROUTES" ]; then
-        printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}не указаны${CLR_OFF}\n" "advertise_routes"
+        printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${RED}не указаны${CLR_OFF} [%s]\n" "advertise_routes" "галочка \"Узел выхода\""
     else
         # Получаем подсеть роутера
         ROUTER_SUBNET=$(ip -4 route show dev br-lan 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+' | head -n1)
@@ -178,18 +178,18 @@ if [ "$EXIT_NODE" = "1" ]; then
         if [ -n "$ROUTER_SUBNET" ]; then
             # Сравниваем
             if echo "$ADVERTISED_ROUTES" | grep -qF "$ROUTER_SUBNET"; then
-                printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${CYAN}%s${CLR_OFF} ${GREEN}= %s (br-lan)${CLR_OFF}\n" "advertise_routes" "$ADVERTISED_ROUTES" "$ROUTER_SUBNET"
+                printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${CYAN}%s${CLR_OFF} ${GREEN}= %s (br-lan)${CLR_OFF} [%s]\n" "advertise_routes" "$ADVERTISED_ROUTES" "$ROUTER_SUBNET" "настройка \"Открыть подсети\""
             else
-                printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${CYAN}%s${CLR_OFF} ${RED}!= %s (br-lan)${CLR_OFF}\n" "advertise_routes" "$ADVERTISED_ROUTES" "$ROUTER_SUBNET"
+                printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | ${CYAN}%s${CLR_OFF} ${RED}!= %s (br-lan)${CLR_OFF} [%s]\n" "advertise_routes" "$ADVERTISED_ROUTES" "$ROUTER_SUBNET" "настройка \"Открыть подсети\""
             fi
         else
             # Если не удалось определить подсеть роутера - просто выводим advertise_routes
-            printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${CYAN}%s${CLR_OFF}\n" "advertise_routes" "$ADVERTISED_ROUTES"
-            printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}не удалось определить${CLR_OFF}\n" "Подсеть роутера (br-lan)"
+            printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | ${CYAN}%s${CLR_OFF} [%s]\n" "advertise_routes" "$ADVERTISED_ROUTES" "настройка \"Открыть подсети"
+            printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}не удалось определить${CLR_OFF} [%s]\n" "Подсеть роутера (br-lan)"
         fi
     fi
 else
-    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF}\n" "advertise_exit_node"
+    printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF} [%s]\n" "advertise_exit_node" "галочка \"Узел выхода\""
 fi
 
 echo ""
