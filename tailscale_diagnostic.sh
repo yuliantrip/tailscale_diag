@@ -192,6 +192,35 @@ else
     printf "  ${YELLOW}[ИНФО]${CLR_OFF} %-30s | ${YELLOW}выключен${CLR_OFF} [%s]\n" "advertise_exit_node" "галочка \"Узел выхода\""
 fi
 
+# 3.3) Проверка zeroblock и podkop (интерфейсы)
+# 3.3.1) zeroblock
+if [ -f "/etc/init.d/zeroblock" ]; then
+	ZB_INT=$(uci -q get zeroblock.settings.source_network_interfaces | sed "s/'//g" | tr ' ' ',')
+	ZB_STATUS=$(/etc/init.d/zeroblock status 2>&1)
+	if [ "$EXIT_NODE" = "1" ]; then
+		if echo "$ZB_INT" | grep -q "tailscale0"; then
+			printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | интерфейсы ${CYAN}%s${CLR_OFF} [%s]\n" "zeroblock ($ZB_STATUS)" "$ZB_INT" "настройка \"Входящие интерфейсы\""
+		else
+			printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | интерфейсы ${RED}%s${CLR_OFF} [%s]\n" "zeroblock ($ZB_STATUS)" "$ZB_INT" "настройка \"Входящие интерфейсы\""
+			printf "         ${YELLOW}Для работы exit node интерфейс tailscale0 должен быть выбран в настройках %s${CLR_OFF}\n" "zeroblock"
+		fi
+	fi
+fi
+
+# 3.3.2) podkop
+if [ -f "/etc/init.d/podkop" ]; then
+    PK_INT=$(uci -q get podkop.settings.source_network_interfaces | sed "s/'//g" | tr ' ' ',')
+    PK_STATUS=$(/etc/init.d/podkop status 2>&1)
+	if [ "$EXIT_NODE" = "1" ]; then
+		if echo "$PK_INT" | grep -q "tailscale0"; then
+			printf "  ${GREEN}[OK]${CLR_OFF}   %-30s | интерфейсы ${CYAN}%s${CLR_OFF} [%s]\n" "podkop ($PK_STATUS)" "$PK_INT" "настройка \"Интерфейс источника\""
+		else
+			printf "  ${RED}[КРИТ]${CLR_OFF} %-30s | интерфейсы ${RED}%s${CLR_OFF} [%s]\n" "podkop ($PK_STATUS)" "$PK_INT" "настройка \"Интерфейс источника\""
+			printf "         ${YELLOW}Для работы exit node интерфейс tailscale0 должен быть выбран в настройках %s${CLR_OFF}\n" "podkop"
+		fi
+	fi
+fi
+
 echo ""
 echo "= СТАТУС ПОДКЛЮЧЕНИЯ:"
 
