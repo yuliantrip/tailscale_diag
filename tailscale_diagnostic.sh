@@ -118,7 +118,7 @@ fi
 # 1.2) accept_dns (зависит от версии)
 #ACCEPT_DNS=$(uci -q get tailscale.settings.accept_dns)
 #EXPECTED_DNS="1"
-ACCEPT_DNS=$(uci -q get tailscale.settings..disable_magic_dns)
+ACCEPT_DNS=$(uci -q get tailscale.settings.disable_magic_dns)
 EXPECTED_DNS="0"
 
 if [ -n "$TS_VERSION" ]; then
